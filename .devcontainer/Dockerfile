@@ -32,10 +32,11 @@ RUN git clone https://github.com/jeaye/stdman \
 && make install \
 && cd .. \
 && rm -rf stdman
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-&& apt-get install -y nodejs=10.24.1-deb-1nodesource1 \
-&& npm install -g typescript@3.8.3 \
-&& rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL https://nodejs.org/dist/v10.24.1/node-v10.24.1-linux-x64.tar.xz | tar -xJ -C /opt \
+&& ln -s /opt/node-v10.24.1-linux-x64 /opt/node \
+&& ln -s /opt/node/bin/node /usr/local/bin/node \
+&& ln -s /opt/node/bin/npm /usr/local/bin/npm \
+&& npm install -g typescript@3.8.3
 RUN cd /opt \
 	&& curl -sL https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u302-b08/OpenJDK8U-jdk_x64_linux_hotspot_8u302b08.tar.gz | tar -xz \
 	&& ln -s /opt/jdk8u302-b08 /opt/jdk8

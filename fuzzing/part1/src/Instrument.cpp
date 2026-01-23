@@ -12,14 +12,14 @@
  * or edited. Removing it will be considered an academic integrity issue.
  *
  * We do grant permission to share solutions privately with non-students such
- * as potential employers as long as this header remains in full. However, 
+ * as potential employers as long as this header remains in full. However,
  * sharing with other current or future students or using a medium to share
- * where the code is widely available on the internet is prohibited and 
+ * where the code is widely available on the internet is prohibited and
  * subject to being investigated as a GT honor code violation.
- * Please respect the intellectual ownership of the course materials 
- * (including exam keys, project requirements, etc.) and do not distribute them 
- * to anyone not enrolled in the class. Use of any previous semester course 
- * materials, such as tests, quizzes, homework, projects, videos, and any other 
+ * Please respect the intellectual ownership of the course materials
+ * (including exam keys, project requirements, etc.) and do not distribute them
+ * to anyone not enrolled in the class. Use of any previous semester course
+ * materials, such as tests, quizzes, homework, projects, videos, and any other
  * coursework, is prohibited in this course. */
 #include "Instrument.h"
 
@@ -34,7 +34,33 @@ static const char *CoverageFunctionName = "__coverage__";
  * Implement divide-by-zero sanitizer.
  */
 void instrumentSanitizer(Module *M, Function &F, Instruction &I) {
-  /* Add your code here */
+  FunctionType* FuncType = FunctionType::get(RetType, ArgTypes, false);
+  LLVMContext &Context = M.getContext();
+  Type* RetType = Type::getVoidTy(Context);
+    std::vector<Type*> ArgTypes = {
+        Type::getInt32Ty(Context),
+        Type::getInt32Ty(Context),
+        Type::getInt32Ty(Context)
+
+  FunctionType* FuncType = FunctionType::get(RetType, ArgTypes, false);
+  CalleeFunc = M.getOrInsertFunction("__dbz_sanitizer__", FuncType)
+
+  Value* divisor = I.getOperand(1);
+  DebugLoc loc = I.getDebugLoc();
+  unsigned line = loc.getLine();
+  unsigned col = loc.getCol();
+
+  llvm::Value* line = Builder.getInt32(line);
+  llvm::Value* col = Builder.getInt32(col);
+
+  std::vector<Value*> Args;
+  Args.push_back(divisor);
+  Args.push_back(line);
+  Args.push_back(col);
+
+  IRBuilder<> Builder(I);
+  Builde.CreateCall(CalleeFunc, Args);
+
 }
 
 /*
