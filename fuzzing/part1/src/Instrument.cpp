@@ -33,30 +33,30 @@ static const char *CoverageFunctionName = "__coverage__";
  * Implement divide-by-zero sanitizer.
  */
 void instrumentSanitizer(Module *M, Function &F, Instruction &I) {
-  FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
-  LLVMContext &Context = M.getContext();
+  LLVMContext &Context = M->getContext();
   Type *RetType = Type::getVoidTy(Context);
   std::vector<Type *> ArgTypes = {Type::getInt32Ty(Context),
                                   Type::getInt32Ty(Context),
                                   Type::getInt32Ty(Context)};
-
   FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
-  CalleeFunc = M.getOrInsertFunction("__dbz_sanitizer__", FuncType);
+  auto CalleeFunc = M->getOrInsertFunction("__dbz_sanitizer__", FuncType);
 
   Value *divisor = I.getOperand(1);
   DebugLoc loc = I.getDebugLoc();
   if (loc) {
-    unsigned line = loc.getLine();
-    unsigned col = loc.getCol();
-    llvm::Value *line = Builder.getInt32(line);
-    llvm::Value *col = Builder.getInt32(col);
+    unsigned raw_line = loc.getLine();
+    unsigned raw_col = loc.getCol();
+
+    IRBuilder<> Builder(&I);
+    llvm::Value *line = Builder.getInt32(raw_line);
+    llvm::Value *col = Builder.getInt32(raw_col);
 
     std::vector<Value *> Args;
     Args.push_back(divisor);
     Args.push_back(line);
     Args.push_back(col);
 
-    IRBuilder<> Builder(I);
+
     Builder.CreateCall(CalleeFunc, Args);
   }
 }
@@ -65,27 +65,27 @@ void instrumentSanitizer(Module *M, Function &F, Instruction &I) {
  * Implement code coverage instrumentation.
  */
 void instrumentCoverage(Module *M, Function &F, Instruction &I) {
-  FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
-  LLVMContext &Context = M.getContext();
+  LLVMContext &Context = M->getContext();
   Type *RetType = Type::getVoidTy(Context);
   std::vector<Type *> ArgTypes = {Type::getInt32Ty(Context),
                                   Type::getInt32Ty(Context)};
-
   FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
-  CalleeFunc = M.getOrInsertFunction("__coverage__", FuncType);
+  auto CalleeFunc = M->getOrInsertFunction("__coverage__", FuncType);
 
   DebugLoc loc = I.getDebugLoc();
   if (loc) {
-    unsigned line = loc.getLine();
-    unsigned col = loc.getCol();
-    llvm::Value *line = Builder.getInt32(line);
-    llvm::Value *col = Builder.getInt32(col);
+    unsigned raw_line = loc.getLine();
+    unsigned raw_col = loc.getCol();
+
+    IRBuilder<> Builder(&I);
+    llvm::Value *line = Builder.getInt32(raw_line);
+    llvm::Value *col = Builder.getInt32(raw_col);
 
     std::vector<Value *> Args;
     Args.push_back(line);
     Args.push_back(col);
 
-    IRBuilder<> Builder(I);
+  
     Builder.CreateCall(CalleeFunc, Args);
   }
 }
@@ -101,6 +101,7 @@ bool Instrument::runOnFunction(Function &F) {
           I.getOpcode() == Instruction::UDiv) {
         div_instructions.push_back(&I);
       }
+      instrumentCoverage(M, F, I);
     }
   }
 

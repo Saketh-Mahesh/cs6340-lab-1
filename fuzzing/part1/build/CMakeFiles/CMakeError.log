@@ -1,0 +1,30 @@
+Performing C SOURCE FILE Test C_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW failed with the following output:
+Change Dir: /workspaces/cs6340-lab-1/fuzzing/part1/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_60e47/fast && /usr/bin/make -f CMakeFiles/cmTC_60e47.dir/build.make CMakeFiles/cmTC_60e47.dir/build
+make[1]: Entering directory '/workspaces/cs6340-lab-1/fuzzing/part1/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_60e47.dir/src.c.o
+/usr/bin/cc   -fPIC -Werror=date-time -DC_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW   -Werror -Werror=unguarded-availability-new -o CMakeFiles/cmTC_60e47.dir/src.c.o   -c /workspaces/cs6340-lab-1/fuzzing/part1/build/CMakeFiles/CMakeTmp/src.c
+cc1: error: '-Werror=unguarded-availability-new': no option -Wunguarded-availability-new
+make[1]: *** [CMakeFiles/cmTC_60e47.dir/build.make:66: CMakeFiles/cmTC_60e47.dir/src.c.o] Error 1
+make[1]: Leaving directory '/workspaces/cs6340-lab-1/fuzzing/part1/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_60e47/fast] Error 2
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW failed with the following output:
+Change Dir: /workspaces/cs6340-lab-1/fuzzing/part1/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_98f53/fast && /usr/bin/make -f CMakeFiles/cmTC_98f53.dir/build.make CMakeFiles/cmTC_98f53.dir/build
+make[1]: Entering directory '/workspaces/cs6340-lab-1/fuzzing/part1/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_98f53.dir/src.cxx.o
+/usr/bin/c++    -fPIC -fvisibility-inlines-hidden -Werror=date-time -DCXX_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW   -Werror -Werror=unguarded-availability-new -o CMakeFiles/cmTC_98f53.dir/src.cxx.o -c /workspaces/cs6340-lab-1/fuzzing/part1/build/CMakeFiles/CMakeTmp/src.cxx
+cc1plus: error: '-Werror=unguarded-availability-new': no option -Wunguarded-availability-new
+make[1]: *** [CMakeFiles/cmTC_98f53.dir/build.make:66: CMakeFiles/cmTC_98f53.dir/src.cxx.o] Error 1
+make[1]: Leaving directory '/workspaces/cs6340-lab-1/fuzzing/part1/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_98f53/fast] Error 2
+
+
+Source file was:
+int main() { return 0; }
