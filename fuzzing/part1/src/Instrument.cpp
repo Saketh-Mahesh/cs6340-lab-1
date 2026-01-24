@@ -1,8 +1,7 @@
 /*
- * Copyright Â© 2021 Georgia Institute of Technology (Georgia Tech). All Rights Reserved.
- * Template code for CS 6340 Software Analysis
- * Instructors: Mayur Naik and Chris Poch
- * Head TAs: Kelly Parks and Joel Cooper
+ * Copyright Â© 2021 Georgia Institute of Technology (Georgia Tech). All Rights
+ * Reserved. Template code for CS 6340 Software Analysis Instructors: Mayur Naik
+ * and Chris Poch Head TAs: Kelly Parks and Joel Cooper
  *
  * Georgia Tech asserts copyright ownership of this template and all derivative
  * works, including solutions to the projects assigned in this course. Students
@@ -34,44 +33,81 @@ static const char *CoverageFunctionName = "__coverage__";
  * Implement divide-by-zero sanitizer.
  */
 void instrumentSanitizer(Module *M, Function &F, Instruction &I) {
-  FunctionType* FuncType = FunctionType::get(RetType, ArgTypes, false);
+  FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
   LLVMContext &Context = M.getContext();
-  Type* RetType = Type::getVoidTy(Context);
-    std::vector<Type*> ArgTypes = {
-        Type::getInt32Ty(Context),
-        Type::getInt32Ty(Context),
-        Type::getInt32Ty(Context)
+  Type *RetType = Type::getVoidTy(Context);
+  std::vector<Type *> ArgTypes = {Type::getInt32Ty(Context),
+                                  Type::getInt32Ty(Context),
+                                  Type::getInt32Ty(Context)};
 
-  FunctionType* FuncType = FunctionType::get(RetType, ArgTypes, false);
-  CalleeFunc = M.getOrInsertFunction("__dbz_sanitizer__", FuncType)
+  FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
+  CalleeFunc = M.getOrInsertFunction("__dbz_sanitizer__", FuncType);
 
-  Value* divisor = I.getOperand(1);
+  Value *divisor = I.getOperand(1);
   DebugLoc loc = I.getDebugLoc();
-  unsigned line = loc.getLine();
-  unsigned col = loc.getCol();
+  if (loc) {
+    unsigned line = loc.getLine();
+    unsigned col = loc.getCol();
+    llvm::Value *line = Builder.getInt32(line);
+    llvm::Value *col = Builder.getInt32(col);
 
-  llvm::Value* line = Builder.getInt32(line);
-  llvm::Value* col = Builder.getInt32(col);
+    std::vector<Value *> Args;
+    Args.push_back(divisor);
+    Args.push_back(line);
+    Args.push_back(col);
 
-  std::vector<Value*> Args;
-  Args.push_back(divisor);
-  Args.push_back(line);
-  Args.push_back(col);
-
-  IRBuilder<> Builder(I);
-  Builde.CreateCall(CalleeFunc, Args);
-
+    IRBuilder<> Builder(I);
+    Builder.CreateCall(CalleeFunc, Args);
+  }
 }
 
 /*
  * Implement code coverage instrumentation.
  */
 void instrumentCoverage(Module *M, Function &F, Instruction &I) {
-  /* Add your code here */
+  FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
+  LLVMContext &Context = M.getContext();
+  Type *RetType = Type::getVoidTy(Context);
+  std::vector<Type *> ArgTypes = {Type::getInt32Ty(Context),
+                                  Type::getInt32Ty(Context)};
+
+  FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
+  CalleeFunc = M.getOrInsertFunction("__coverage__", FuncType);
+
+  DebugLoc loc = I.getDebugLoc();
+  if (loc) {
+    unsigned line = loc.getLine();
+    unsigned col = loc.getCol();
+    llvm::Value *line = Builder.getInt32(line);
+    llvm::Value *col = Builder.getInt32(col);
+
+    std::vector<Value *> Args;
+    Args.push_back(line);
+    Args.push_back(col);
+
+    IRBuilder<> Builder(I);
+    Builder.CreateCall(CalleeFunc, Args);
+  }
 }
 
 bool Instrument::runOnFunction(Function &F) {
-  /* Add your code here */
+  LLVMContext &Context = F.getContext();
+  Module *M = F.getParent();
+
+  std::vector<Instruction *> div_instructions;
+  for (BasicBlock &BB : F) {
+    for (Instruction &I : BB) {
+      if (I.getOpcode() == Instruction::SDiv ||
+          I.getOpcode() == Instruction::UDiv) {
+        div_instructions.push_back(&I);
+      }
+    }
+  }
+
+  for (Instruction *I : div_instructions) {
+    instrumentSanitizer(M, F, *I);
+  }
+
   return true;
 }
 
