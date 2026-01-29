@@ -23,8 +23,17 @@
 #include "Mutate.h"
 
 #include <cstring>
+#include <iostream>
 #include <map>
 #include <random>
+
+static std::mt19937 gen(std::random_device{}());
+constexpr int MIN_RANDOM_STRING_LENGTH = 1;
+constexpr int MAX_RANDOM_STRING_LENGTH = 20;
+constexpr int RANDOM_REPLACE_LENGTH_MIN = 1;
+constexpr int RANDOM_REPLACE_LENGTH_MAX = 10;
+const std::string CHARSET =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 std::map<std::string, Campaign> to_campaign = {{"MutationA", MutationA},
                                                {"MutationB", MutationB},
@@ -49,48 +58,47 @@ bool toCampaign(std::string Str, Campaign &FuzzCampaign) {
  * Implement your mutation algorithms.
  */
 
-int generate_random_index(std::string &Origin) {
-  if (Origin.length() == 0) {
-    return 0;
-  }
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distr(0, Origin.length() - 1);
+int generate_random_number(int min, int max) {
+  std::uniform_int_distribution<> distr(min, max);
   return distr(gen);
 }
 
-std::string generate_random_string(int length) {
-  const std::string charset =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distr(0, charset.length() - 1);
+std::string generate_random_string() {
+
+  int length = generate_random_number(MIN_RANDOM_STRING_LENGTH,
+                                      MAX_RANDOM_STRING_LENGTH);
+
   std::string result;
   for (int i = 0; i < length; ++i) {
-    result += charset[distr(gen)];
+    result += CHARSET[generate_random_number(0, CHARSET.length() - 1)];
   }
   return result;
 }
 
 std::string mutateA(std::string Origin) {
-  int randomIndex = generate_random_index(Origin);
-  std::string result = generate_random_string(10);
+  int randomIndex = generate_random_number(0, Origin.length() - 1);
+  std::string result = generate_random_string();
   Origin.insert(randomIndex, result);
   return Origin;
 }
 
-std::string mutateB(std::string Origin) { 
-  int randomIndex1 = generate_random_index(Origin);
-  int randomIndex2 = generate_random_index(Origin);
+std::string mutateB(std::string Origin) {
+  int randomIndex1 = generate_random_number(0, Origin.length() - 1);
+  int randomIndex2 = generate_random_number(0, Origin.length() - 1);
 
-  std::string randomString1 = generate_random_string(5);
-  std::string randomString2 = generate_random_string(5);
-  Origin.replace(randomIndex1, 5, randomString1);
-  Origin.replace(randomIndex2, 5, randomString2);
-  return Origin; 
+  int length1 = generate_random_number(RANDOM_REPLACE_LENGTH_MIN, RANDOM_REPLACE_LENGTH_MAX);
+  int length2 = generate_random_number(RANDOM_REPLACE_LENGTH_MIN, RANDOM_REPLACE_LENGTH_MAX);
+
+  std::string randomString1 = generate_random_string();
+  std::string randomString2 = generate_random_string();
+  Origin.replace(randomIndex1, length1, randomString1);
+  Origin.replace(randomIndex2, length2, randomString2);
+  return Origin;
 }
 
-std::string mutateC(std::string Origin) { return Origin; }
+std::string mutateC(const std::string& origin) {
+  return origin + generate_random_string();
+}
 
 std::string mutate(std::string Origin, Campaign &FuzzCampaign) {
   std::string Mutant;

@@ -85,7 +85,7 @@ void instrumentCoverage(Module *M, Function &F, Instruction &I) {
     Args.push_back(line);
     Args.push_back(col);
 
-  
+
     Builder.CreateCall(CalleeFunc, Args);
   }
 }
@@ -101,7 +101,9 @@ bool Instrument::runOnFunction(Function &F) {
           I.getOpcode() == Instruction::UDiv) {
         div_instructions.push_back(&I);
       }
-      instrumentCoverage(M, F, I);
+      else {
+        instrumentCoverage(M, F, I);
+      }
     }
   }
 

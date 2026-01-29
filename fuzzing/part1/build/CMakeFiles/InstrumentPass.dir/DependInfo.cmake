@@ -10,7 +10,6 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
-  "GTEST_HAS_RTTI=0"
   "__STDC_CONSTANT_MACROS"
   "__STDC_FORMAT_MACROS"
   "__STDC_LIMIT_MACROS"
