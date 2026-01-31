@@ -29,16 +29,18 @@ namespace instrument {
 static const char *SanitizerFunctionName = "__dbz_sanitizer__";
 static const char *CoverageFunctionName = "__coverage__";
 
+FunctionType *getSanitizerFunctionType(LLVMContext &Context, unsigned numArgs) {
+  Type *RetType = Type::getVoidTy(Context);
+  std::vector<Type *> ArgTypes(numArgs, Type::getInt32Ty(Context));
+  return FunctionType::get(RetType, ArgTypes, false);
+}
+
 /*
  * Implement divide-by-zero sanitizer.
  */
 void instrumentSanitizer(Module *M, Function &F, Instruction &I) {
   LLVMContext &Context = M->getContext();
-  Type *RetType = Type::getVoidTy(Context);
-  std::vector<Type *> ArgTypes = {Type::getInt32Ty(Context),
-                                  Type::getInt32Ty(Context),
-                                  Type::getInt32Ty(Context)};
-  FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
+  FunctionType *FuncType = getSanitizerFunctionType(Context, 3);
   auto CalleeFunc = M->getOrInsertFunction("__dbz_sanitizer__", FuncType);
 
   Value *divisor = I.getOperand(1);
@@ -66,10 +68,7 @@ void instrumentSanitizer(Module *M, Function &F, Instruction &I) {
  */
 void instrumentCoverage(Module *M, Function &F, Instruction &I) {
   LLVMContext &Context = M->getContext();
-  Type *RetType = Type::getVoidTy(Context);
-  std::vector<Type *> ArgTypes = {Type::getInt32Ty(Context),
-                                  Type::getInt32Ty(Context)};
-  FunctionType *FuncType = FunctionType::get(RetType, ArgTypes, false);
+  FunctionType *FuncType = getSanitizerFunctionType(Context, 2);
   auto CalleeFunc = M->getOrInsertFunction("__coverage__", FuncType);
 
   DebugLoc loc = I.getDebugLoc();
