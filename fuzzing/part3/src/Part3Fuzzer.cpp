@@ -49,7 +49,15 @@ std::string CampaignToStr(Campaign &FuzzCamp) {
  * Implement your feedback-directed seed update algorithm.
  */
 std::pair<std::string, Campaign> selectSeedAndCampaign() {
-  Campaign FuzzCamp = (Campaign)(rand() % NumCampaigns);
+  Campaign FuzzCamp;
+  bool foundValidCampaign = false;
+
+  while (!foundValidCampaign) {
+    FuzzCamp = (Campaign)(rand() % NumCampaigns);
+    if (!SeedInputs[FuzzCamp].empty()) {
+      foundValidCampaign = true;
+    }
+  }
   std::string Seed = SeedInputs[FuzzCamp].back();
   return std::make_pair(Seed, FuzzCamp);
 }

@@ -71,11 +71,9 @@ std::string generate_random_string() {
 }
 
 std::string remove_random_characters(std::string Origin) {
-  int numRemovals = generate_random_number(1, 10);
-  for (int i = 0; i < numRemovals && Origin.length() > 0; ++i) {
-    int randomIndex = generate_random_number(0, Origin.length() - 1);
-    Origin.erase(randomIndex, 1);
-  }
+  int randomIndex = generate_random_number(0, Origin.length() - 1);
+  int randomDelete = generate_random_number(100, std::min(1000, (int)(Origin.length() - randomIndex)));
+  Origin.erase(randomIndex, randomDelete);
   return Origin;
 }
 
@@ -113,7 +111,10 @@ std::string mutateB(std::string Origin) {
 }
 
 std::string mutateC(std::string Origin) {
-  Origin + generate_random_string();
+  if (Origin.empty()) {
+    return generate_random_string();
+  }
+  Origin += generate_random_string();
   if (Origin.length() >= 65000) {
     Origin = remove_random_characters(Origin);
   }
