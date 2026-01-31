@@ -20,12 +20,12 @@
  * to anyone not enrolled in the class. Use of any previous semester course
  * materials, such as tests, quizzes, homework, projects, videos, and any other
  * coursework, is prohibited in this course. */
-#include <cstdio>
 #include <cstdlib>
 #include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstdio>
 
 #include "Mutate.h"
 #include "Utils.h"

@@ -70,6 +70,15 @@ std::string generate_random_string() {
   return result;
 }
 
+std::string remove_random_characters(std::string Origin) {
+  int numRemovals = generate_random_number(1, 10);
+  for (int i = 0; i < numRemovals && Origin.length() > 0; ++i) {
+    int randomIndex = generate_random_number(0, Origin.length() - 1);
+    Origin.erase(randomIndex, 1);
+  }
+  return Origin;
+}
+
 std::string mutateA(std::string Origin) {
   int randomIndex1 = generate_random_number(0, Origin.length() - 1);
   int randomIndex2 = generate_random_number(0, Origin.length() - 1);
@@ -79,20 +88,36 @@ std::string mutateA(std::string Origin) {
 
   std::string randomString1 = generate_random_string();
   std::string randomString2 = generate_random_string();
+
   Origin.replace(randomIndex1, length1, randomString1);
   Origin.replace(randomIndex2, length2, randomString2);
+
+  if (Origin.length() >= 65000) {
+    Origin = remove_random_characters(Origin);
+  }
+
   return Origin;
 }
 
 std::string mutateB(std::string Origin) {
+
   int randomIndex = generate_random_number(0, Origin.length() - 1);
   std::string result = generate_random_string();
   Origin.insert(randomIndex, result);
+
+  if (Origin.length() >= 65000) {
+    Origin = remove_random_characters(Origin);
+  }
+
   return Origin;
 }
 
-std::string mutateC(const std::string &origin) {
-  return origin + generate_random_string();
+std::string mutateC(std::string Origin) {
+  Origin + generate_random_string();
+  if (Origin.length() >= 65000) {
+    Origin = remove_random_characters(Origin);
+  }
+  return Origin;
 }
 
 std::string mutate(std::string Origin, Campaign &FuzzCampaign) {

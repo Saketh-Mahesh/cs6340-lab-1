@@ -96,12 +96,10 @@ bool Instrument::runOnFunction(Function &F) {
   std::vector<Instruction *> div_instructions;
   for (BasicBlock &BB : F) {
     for (Instruction &I : BB) {
+      instrumentCoverage(M, F, I);
       if (I.getOpcode() == Instruction::SDiv ||
           I.getOpcode() == Instruction::UDiv) {
         div_instructions.push_back(&I);
-      }
-      else {
-        instrumentCoverage(M, F, I);
       }
     }
   }
