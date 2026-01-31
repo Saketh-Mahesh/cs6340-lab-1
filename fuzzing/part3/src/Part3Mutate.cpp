@@ -60,8 +60,7 @@ int generate_random_number(int min, int max) {
 }
 
 std::string generate_random_string() {
-
-  int length = generate_random_number(1, 20);
+  int length = generate_random_number(1, 100);
 
   std::string result;
   for (int i = 0; i < length; ++i) {
@@ -78,8 +77,10 @@ std::string remove_random_characters(std::string Origin) {
 }
 
 void perform_random_replacement(std::string &Origin) {
+  int maxReplaceLen = std::max(1, (int)(Origin.length() / 2));
+
   int randomIndex = generate_random_number(0, Origin.length() - 1);
-  int length = generate_random_number(1, std::min(20, (int)(Origin.length() - randomIndex)));
+  int length = generate_random_number(1, std::min(maxReplaceLen, (int)(Origin.length() - randomIndex)));
 
   std::string randomString = generate_random_string();
   Origin.replace(randomIndex, length, randomString);
