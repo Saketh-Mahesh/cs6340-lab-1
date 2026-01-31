@@ -93,8 +93,8 @@ void updateSeedInputs(std::string &Target, std::string &Mutated,
       parseCoverageFile(coverage_file);
   bool inserted_new_coverage = false;
   for (const auto &entry : currentCoverage) {
-    auto [it, inserted] = coverageInfo.insert(entry);
-    if (inserted) {
+    bool wasInserted = coverageInfo.insert(entry).second;
+    if (wasInserted) {
       inserted_new_coverage = true;
     }
   }

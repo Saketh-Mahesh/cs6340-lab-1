@@ -27,6 +27,7 @@ entry:
   %1 = load i32, i32* %y, align 4, !dbg !18
   call void @__coverage__(i32 27, i32 15), !dbg !19
   %2 = load i32, i32* %x, align 4, !dbg !19
+  call void @__coverage__(i32 27, i32 13), !dbg !20
   call void @__dbz_sanitizer__(i32 %2, i32 27, i32 13), !dbg !20
   %div = sdiv i32 %1, %2, !dbg !20
   call void @__coverage__(i32 27, i32 7), !dbg !16
