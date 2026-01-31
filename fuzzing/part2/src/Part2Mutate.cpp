@@ -77,18 +77,32 @@ std::string remove_random_characters(std::string Origin) {
   return Origin;
 }
 
+void perform_random_replacement(std::string &Origin) {
+  int randomIndex = generate_random_number(0, Origin.length() - 1);
+  int length = generate_random_number(1, std::min(20, (int)(Origin.length() - randomIndex)));
+
+  std::string randomString = generate_random_string();
+  Origin.replace(randomIndex, length, randomString);
+}
+
+void perform_random_insertion(std::string &Origin) {
+  int randomIndex = generate_random_number(0, Origin.length() - 1);
+  std::string result = generate_random_string();
+  Origin.insert(randomIndex, result);
+}
+
 std::string mutateA(std::string Origin) {
-  int randomIndex1 = generate_random_number(0, Origin.length() - 1);
-  int randomIndex2 = generate_random_number(0, Origin.length() - 1);
+  if (Origin.empty()) {
+    return generate_random_string();
+  }
 
-  int length1 = generate_random_number(1, 10);
-  int length2 = generate_random_number(1, 10);
+  int num = generate_random_number(1, 2);
 
-  std::string randomString1 = generate_random_string();
-  std::string randomString2 = generate_random_string();
-
-  Origin.replace(randomIndex1, length1, randomString1);
-  Origin.replace(randomIndex2, length2, randomString2);
+  if (num == 1) {
+    perform_random_replacement(Origin);
+  } else {
+    perform_random_insertion(Origin);
+  }
 
   if (Origin.length() >= 65000) {
     Origin = remove_random_characters(Origin);
@@ -97,7 +111,11 @@ std::string mutateA(std::string Origin) {
   return Origin;
 }
 
+
 std::string mutateB(std::string Origin) {
+  if (Origin.empty()) {
+    return generate_random_string();
+  }
 
   int randomIndex = generate_random_number(0, Origin.length() - 1);
   std::string result = generate_random_string();
@@ -114,10 +132,19 @@ std::string mutateC(std::string Origin) {
   if (Origin.empty()) {
     return generate_random_string();
   }
-  Origin += generate_random_string();
+
+  int num = generate_random_number(1, 2);
+
+  if (num == 1) {
+    Origin += generate_random_string();
+  } else {
+    Origin = generate_random_string() + Origin;
+  }
+
   if (Origin.length() >= 65000) {
     Origin = remove_random_characters(Origin);
   }
+
   return Origin;
 }
 
