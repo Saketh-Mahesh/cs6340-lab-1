@@ -28,10 +28,6 @@
 #include <random>
 
 static std::mt19937 gen(std::random_device{}());
-constexpr int MIN_RANDOM_STRING_LENGTH = 1;
-constexpr int MAX_RANDOM_STRING_LENGTH = 20;
-constexpr int RANDOM_REPLACE_LENGTH_MIN = 1;
-constexpr int RANDOM_REPLACE_LENGTH_MAX = 10;
 const std::string CHARSET =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -65,8 +61,7 @@ int generate_random_number(int min, int max) {
 
 std::string generate_random_string() {
 
-  int length = generate_random_number(MIN_RANDOM_STRING_LENGTH,
-                                      MAX_RANDOM_STRING_LENGTH);
+  int length = generate_random_number(1, 20);
 
   std::string result;
   for (int i = 0; i < length; ++i) {
@@ -76,18 +71,11 @@ std::string generate_random_string() {
 }
 
 std::string mutateA(std::string Origin) {
-  int randomIndex = generate_random_number(0, Origin.length() - 1);
-  std::string result = generate_random_string();
-  Origin.insert(randomIndex, result);
-  return Origin;
-}
-
-std::string mutateB(std::string Origin) {
   int randomIndex1 = generate_random_number(0, Origin.length() - 1);
   int randomIndex2 = generate_random_number(0, Origin.length() - 1);
 
-  int length1 = generate_random_number(RANDOM_REPLACE_LENGTH_MIN, RANDOM_REPLACE_LENGTH_MAX);
-  int length2 = generate_random_number(RANDOM_REPLACE_LENGTH_MIN, RANDOM_REPLACE_LENGTH_MAX);
+  int length1 = generate_random_number(1, 10);
+  int length2 = generate_random_number(1, 10);
 
   std::string randomString1 = generate_random_string();
   std::string randomString2 = generate_random_string();
@@ -96,7 +84,14 @@ std::string mutateB(std::string Origin) {
   return Origin;
 }
 
-std::string mutateC(const std::string& origin) {
+std::string mutateB(std::string Origin) {
+  int randomIndex = generate_random_number(0, Origin.length() - 1);
+  std::string result = generate_random_string();
+  Origin.insert(randomIndex, result);
+  return Origin;
+}
+
+std::string mutateC(const std::string &origin) {
   return origin + generate_random_string();
 }
 

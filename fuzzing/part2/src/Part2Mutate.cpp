@@ -71,13 +71,6 @@ std::string generate_random_string() {
 }
 
 std::string mutateA(std::string Origin) {
-  int randomIndex = generate_random_number(0, Origin.length() - 1);
-  std::string result = generate_random_string();
-  Origin.insert(randomIndex, result);
-  return Origin;
-}
-
-std::string mutateB(std::string Origin) {
   int randomIndex1 = generate_random_number(0, Origin.length() - 1);
   int randomIndex2 = generate_random_number(0, Origin.length() - 1);
 
@@ -88,6 +81,13 @@ std::string mutateB(std::string Origin) {
   std::string randomString2 = generate_random_string();
   Origin.replace(randomIndex1, length1, randomString1);
   Origin.replace(randomIndex2, length2, randomString2);
+  return Origin;
+}
+
+std::string mutateB(std::string Origin) {
+  int randomIndex = generate_random_number(0, Origin.length() - 1);
+  std::string result = generate_random_string();
+  Origin.insert(randomIndex, result);
   return Origin;
 }
 
